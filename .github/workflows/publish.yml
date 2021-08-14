@@ -13,11 +13,17 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
+      - name: Format vertsion
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: download_ahk
+        env:
+          AHK_VERSION: ${{ steps.get_version.outputs.version }}
         run: |
-          python3 -c "from ahk_binary import __version__;raise SystemExit(1 if __version__ != '${GITHUB_REF}' else 0)"
+          python3 -c "from ahk_binary import __version__;raise SystemExit(1 if __version__ != '${AHK_VERSION}' else 0)"
           apt update && apt install --no-install-recommends -y p7zip-full
-          ci/download_ahk $GITHUB_REF
+          chmod +x ci/download_ahk
+          ci/download_ahk $AHK_VERSION
       - name: build
         run: |
           python -m pip install --upgrade setuptools wheel
