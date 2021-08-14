@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+version="$1"
+
+
+
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+checksum_path="${parent_path}/checksums/autohotkey_${version}.sha256.txt"
+
+if [[ ! -f "$checksum_path" ]]; then
+  echo "FATAL: checksum file '${checksum_path}' not found" > /dev/stderr
+  exit 1
+fi
+
+sha256checksum="$(cat $checksum_path)"
+
+url="https://github.com/Lexikos/AutoHotkey_L/releases/download/v${version}/AutoHotkey_${version}_setup.exe"
+
+curl -L -o "autohotkey_${version}.exe" "${url}"
+
+
+if [[ ! $(echo "${sha256checksum} autohotkey_${version}.exe" | sha256sum -c) ]]; then
+  echo "FATAL: sha256 checksum did not match. Exiting." > /dev/stderr
+  exit 1
+fi
+
+7z x "autohotkey_${version}.exe" "AutoHotkeyU64.exe"
+
+mv "AutoHotkeyU64.exe" "AutoHotkey.exe"
