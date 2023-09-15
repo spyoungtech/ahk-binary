@@ -15,16 +15,31 @@ fi
 
 sha256checksum="$(cat $checksum_path)"
 
-url="https://github.com/Lexikos/AutoHotkey_L/releases/download/v${version}/AutoHotkey_${version}_setup.exe"
+if grep -E '^2' <<< $version; then
+  # v2
+  url="https://github.com/Lexikos/AutoHotkey_L/releases/download/v${version}/AutoHotkey_${version}.zip"
+  location="autohotkey_${version}.zip"
+  extract_name="AutoHotkey64.exe"
+  final_name="AutoHotkeyV2.exe"
+else
+  # v1
+  url="https://github.com/Lexikos/AutoHotkey_L/releases/download/v${version}/AutoHotkey_${version}_setup.exe"
+  location="autohotkey_${version}.exe"
+  extract_name="AutoHotkeyU64.exe"
+  final_name="AutoHotkey.exe"
+fi
 
-curl -L -o "autohotkey_${version}.exe" "${url}"
 
 
-if [[ ! $(echo "${sha256checksum} autohotkey_${version}.exe" | sha256sum -c) ]]; then
+curl -L -o "${location}" "${url}"
+
+
+
+if [[ ! $(echo "${sha256checksum} ${location}" | sha256sum -c) ]]; then
   echo "FATAL: sha256 checksum did not match. Exiting." > /dev/stderr
   exit 1
 fi
 
-7z x "autohotkey_${version}.exe" "AutoHotkeyU64.exe"
+7z x "${location}" "${extract_name}"
 
-mv "AutoHotkeyU64.exe" "AutoHotkey.exe"
+mv "${extract_name}" ${final_name}
