@@ -8,7 +8,7 @@ setup(
     author_email='spencer.young@spyoung.com',
     author='Spencer Young',
     url="https://github.com/spyoungtech/ahk-binary",
-    data_files=[('Scripts', ['AutoHotkey.exe'])],
+    data_files=[('Scripts', ['AutoHotkey.exe', 'AutoHotkeyV2.exe'])],
     packages=['ahk_binary'],
     license="GNU General Public License v2 (GPLv2)",
     classifiers=[
