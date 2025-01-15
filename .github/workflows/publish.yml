@@ -14,7 +14,7 @@ jobs:
       - name: setup_python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.12'
       - name: Format version
         id: get_version
         run: |
